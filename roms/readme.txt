@@ -4,3 +4,10 @@ basic
 kernal
 chargen
 
+Tested with
+
+basic   basic.901226-01.bin
+kernal kernal.901227-03.bin
+
+downloaded from
+https://www.commodore.ca/manuals/funet/cbm/firmware/computers/c64/index-t.html

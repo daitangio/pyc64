@@ -15,9 +15,9 @@ def start():
     emu.start()
     autoload="load \"c32autorun\",8,1"
     autorun="run"
-    emu.screen.writestr(autoload + "\n")
+    #emu.screen.writestr(autoload + "\n")
     emu.execute_direct_line(autoload)
-    emu.screen.writestr(autorun + "\n")
+    #emu.screen.writestr(autorun + "\n")
     emu.execute_direct_line(autorun)
     
     #ret=do_load(screen,"\"c32\",8,1")
