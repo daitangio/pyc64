@@ -416,6 +416,7 @@ class ScreenAndMemory:
         if (0xe000, 0xffff) not in self.memory.rom_areas:
             self.memory[0xe000:0x10000] = 96   # kernal ROM are all RTS instructions (in case no ROM file is present)
         self.jiffieclock_epoch = time.perf_counter()
+        # setup d020 d021
         self.border = 14
         self.screen = 6
         self.text = 14
@@ -431,11 +432,13 @@ class ScreenAndMemory:
 
     @screen.setter
     def screen(self, color):
+        # d021 is 53281
         self.memory[53281] = color
         self._full_repaint = True
 
     @property
     def border(self):
+        # d020 is 53280
         return self.memory[53280]
 
     @border.setter

@@ -1,3 +1,4 @@
 cbmcodecs >= 0.2.0
 py65 >= 1.0.0
-pillow
+pillow==5.4.1
+python-sonic==0.3.0
