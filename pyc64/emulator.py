@@ -22,7 +22,7 @@ from .memory import ScreenAndMemory
 from .basic import BasicInterpreter
 from .shared import ResetMachineException, do_sys
 from .python import PythonInterpreter
-
+from .sid import SidEmulator
 
 def create_bitmaps_from_char_rom(temp_graphics_folder, roms_directory):
     # create char bitmaps from the orignal c-64 chargen rom file
@@ -625,9 +625,10 @@ class C64EmulatorWindow(EmulatorWindowBase):
             self.interpreter.write_prompt("\n\n\n\n\n")
 
 
+
 class InterpretThread(threading.Thread):
     # basic interpreter runs in a worker thread so the GUI can continue handling its events normally.
-    def __init__(self, interpreter, window):
+    def __init__(self, interpreter, window,sid=None):
         super(InterpretThread, self).__init__(name="interpreter", daemon=True)
         self.direct_queue = queue.Queue()
         self.interpreter = interpreter
@@ -639,6 +640,8 @@ class InterpretThread(threading.Thread):
         self.window = window
         self.keybuffer = deque(maxlen=16)
         self.step_counter = 0
+        if sid==None:
+            self.sid=SidEmulator(self.window.screen)
 
     @property
     def running_something(self):

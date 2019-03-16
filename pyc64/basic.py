@@ -242,6 +242,7 @@ class BasicInterpreter:
             self.execute_sys(cmd)
         elif cmd.startswith(("goto", "gO")):
             self.execute_goto(cmd)
+        # GG ON_GOTO MISSED issue #1            
         elif cmd.startswith(("for", "fO")):
             self.execute_for(cmd, all_cmds_on_line)
         elif cmd.startswith(("next", "nE")):

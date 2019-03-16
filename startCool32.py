@@ -11,16 +11,18 @@ def start():
                              rows=C64EmulatorWindow.rows,
                              sprites=C64EmulatorWindow.sprites,
                              rom_directory=rom_directory)
+
+    emu = C64EmulatorWindow(screen, "Cool-32 simulator in pure Python!", rom_directory)
+    emu.start()
     # Vic20 honor
     screen.border=19
     screen.screen=1                             
-    emu = C64EmulatorWindow(screen, "Cool-32 simulator in pure Python!", rom_directory)
-    emu.start()
-    
+    # Run the one -liner sid test
     # autoload="load \"c32autorun\",8,1"
-    # autorun="run"    
-    # emu.execute_direct_line(autoload)
-    # emu.execute_direct_line(autorun)
+    autoload="load \"sidtest2\""
+    autorun="run"    
+    emu.execute_direct_line(autoload)
+    emu.execute_direct_line(autorun)
     
     emu.mainloop()
 
