@@ -106,6 +106,11 @@ class BasicInterpreter:
         self.data_line = None
         self.data_index = None
         self.next_run_line_idx = None
+        # In real C/64 BASIC stack is shared with 6502 stack
+        # and subrutine limits is approx 23
+        self.basic_stack = []
+        self.basic_stack_limit=23
+
         self.program_lines = None
         self.sleep_until = None
         self.must_run_stop = False
@@ -245,6 +250,11 @@ class BasicInterpreter:
             self.execute_sys(cmd)
         elif cmd.startswith(("goto", "gO")):
             self.execute_goto(cmd)
+        elif cmd.startswith(("gosub")):
+            self.execute_gosub(cmd)
+        elif cmd.startswith(("return","rE")):
+            self.execute_gosub_return(cmd)
+        # GG ON_GOTO Fixed
         elif cmd.startswith(("on")):
             self.execute_on_goto_gosub(cmd)
         elif cmd.startswith(("for", "fO")):
@@ -413,9 +423,29 @@ class BasicInterpreter:
                 raise BasicError("undef'd statement")
             raise GotoLineException(self.program_lines.index(line))
     """
+    See https://www.c64-wiki.com/wiki/GOSUB
+    The BASIC-Command GOSUB jumps to a subroutine at the indicated line number. This call is placed onto the stack. The subroutine finalizes using a RETURN command. Program execution continues at the command following the initial GOSUB command.
+    Many subroutines can be called consecutively, but the last one called will be the first to finish. When too many subroutines are called at once (approx. 23), the error ?OUT OF MEMORY ERROR IN line is thrown. When the line number doesn't exist in the GOSUB command, the error ?UNDEF'D STATEMENT ERROR IN line occurs.
+    """            
+    def execute_gosub(self,cmd):
+        if cmd.startswith("gosub"):
+            cmd=cmd[4:]            
+        if(len(self.basic_stack)>=self.basic_stack_limit):
+            raise BasicError("out of memory")
+        self.basic_stack.append(self.next_run_line_idx)
+        self.execute_goto(cmd)
+
+    """ 
+    See https://www.c64-wiki.com/wiki/RETURN
+    """
+    def execute_gosub_return(self,cmd):
+        if(len(self.basic_stack)==0):
+            raise BasicError("return without gosub")
+        raise GotoLineException(self.basic_stack.pop())
+
+    """
     on <index-1-based> goto|gosub <line1>,<line2> 
     if index evaluate to 1 the execution proceed on line1
-
     """            
     def execute_on_goto_gosub(self,cmd):
         gosub=False
@@ -758,6 +788,8 @@ class BasicInterpreter:
     def stop_running_program(self):
         if self.running_program:
             self.next_run_line_idx = None
+            # Reset stack
+            self.basic_stack =[]
         self.sleep_until = None
 
     def get_next_data(self):
