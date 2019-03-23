@@ -30,11 +30,27 @@ class BasicEmulatorTest(unittest.TestCase):
             self.b.implementGoto(gx)
             self.assertTrue(self.b.running_program)
             self.b.program_step()
-            print("CURRENT LINE:"+str(self.b.next_run_line_idx))
+            #print("CURRENT LINE:"+str(self.b.next_run_line_idx))
             self.assertEqual(3,self.b.next_run_line_idx)
             #b.execute_run("run")
             # print("***"+str(b.))
     # TODO Implement a silly test program to test the on expr syntax
+
+    def test_gosub1(self):
+        try:
+            print("TESTING")
+            self.b.execute_load("load \"gosubtest1\" ")
+            self.b.execute_run("run")
+        except GotoLineException as gx:
+            self.b.implementGoto(gx)
+            self.b.program_step()
+            self.b.program_step()
+            print("Stack: %s -- %s " %( self.b.basic_stack , self.b.data_line))
+            self.b.program_step()
+            print("Stack: %s -- %s " %( self.b.basic_stack , self.b.data_line))
+            self.b.program_step()
+            print("Stack: %s -- %s " %( self.b.basic_stack , self.b.data_line))
+
 
 if __name__ == '__main__':
     unittest.main()
